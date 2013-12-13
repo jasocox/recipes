@@ -1,0 +1,15 @@
+Recipe from allrecipes.com. This will be a combination of a web app for
+retreiving the data and a feed service that gets the data.
+
+FEED SERVICE
+The feed service will use the actor pattern. The scheduler will be
+configurable. There are two feeds, one is the list of recipes and one is for
+the recipes themselves. The list of recipes service will only need to run about
+once a week. The recipes themselves should be updated at least every couple of
+days.
+
+It should be possible to trigger everything to run in case of an emergency.
+
+WEB SERVICE
+The web service should serve the recipes. It should also serve "dirty" recipes
+that have been updated since last retrieval.
