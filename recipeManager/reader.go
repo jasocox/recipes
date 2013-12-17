@@ -1,4 +1,4 @@
-package recipeReader
+package recipeManager
 
 import (
   "log"
@@ -12,7 +12,7 @@ type RecipeReader struct {
   running bool
 }
 
-func New() (reader RecipeReader, messages chan string) {
+func NewReader() (reader RecipeReader, messages chan string) {
   log.Println("Creating Recipe Reader")
 
   messages = make(chan string)
@@ -21,14 +21,14 @@ func New() (reader RecipeReader, messages chan string) {
   return
 }
 
-func (r *RecipeReader) MustStart() {
-  err := r.Start()
+func (r *RecipeReader) MustStartReader() {
+  err := r.StartReader()
   if err != nil {
     panic(err.Error())
   }
 }
 
-func (r *RecipeReader) Start() (err error) {
+func (r *RecipeReader) StartReader() (err error) {
   if r.running {
     err = errors.New("Recipe Reader is already running")
     return
@@ -43,12 +43,13 @@ func (r *RecipeReader) Start() (err error) {
     log.Printf("Reader doing %d milliseconds worth of work", millis)
     time.Sleep(time.Duration(int(time.Millisecond) * millis))
 
+    r.running = false
     r.messages <- "Done"
   }()
 
   return
 }
 
-func (r RecipeReader) Running() bool {
+func (r RecipeReader) RunningReader() bool {
   return r.running
 }

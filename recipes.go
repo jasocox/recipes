@@ -3,7 +3,7 @@ package main
 import (
   "log"
   "recipes/recipeFinder"
-  "recipes/recipeReader"
+  "recipes/recipeManager"
 )
 
 func main() {
@@ -12,15 +12,15 @@ func main() {
   finder, finderMessages := recipeFinder.New()
   finder.MustStart()
 
-  reader, readerMessages := recipeReader.New()
-  reader.MustStart()
+  manager, managerMessages := recipeManager.New(10)
+  manager.MustStart()
 
-  for finder.Running() && reader.Running() {
+  for finder.Running() && manager.Running() {
     select {
-    case message := <-readerMessages:
+    case message := <-managerMessages:
       switch message {
       case "Done":
-        log.Println("Reader is done")
+        log.Println("Manager is done")
       }
     case message := <-finderMessages:
       switch message {
