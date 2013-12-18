@@ -9,20 +9,20 @@ import (
 func main() {
   log.Println("Starting Recipes App")
 
-  finder, finderMessages := recipeFinder.New()
+  finder := recipeFinder.New()
   finder.MustStart()
 
   manager, managerMessages := recipeManager.New(10)
   manager.MustStart()
 
-  for finder.Running() && manager.Running() {
+  for finder.Running() || manager.Running() {
     select {
     case message := <-managerMessages:
       switch message {
       case "Done":
         log.Println("Manager is done")
       }
-    case message := <-finderMessages:
+    case message := <-finder.Messages():
       switch message {
           case "Done":
             log.Println("Finder is done")

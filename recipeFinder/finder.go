@@ -3,48 +3,23 @@ package recipeFinder
 import (
   "log"
   "time"
-  "errors"
+  "goworker"
 )
 
 type RecipeFinder struct {
-  messages chan string
-  running bool
+  goworker.Worker
 }
 
-func New() (finder RecipeFinder, messages chan string) {
-  log.Println("Creating Recipe Finder")
+func New() RecipeFinder {
+  name := "Recipe Finder"
 
-  messages = make(chan string)
-  finder.messages = messages
+  finder := RecipeFinder{goworker.NewWorker(name, func() {
+    log.Println(name + " is starting")
 
-  return
-}
-
-func (f *RecipeFinder) MustStart() {
-  err := f.Start()
-  if err != nil {
-    panic(err.Error())
-  }
-}
-
-func (f *RecipeFinder) Start() (err error) {
-  if f.running {
-    err = errors.New("Recipe Finder is already running")
-    return
-  }
-
-  f.running = true
-  log.Println("Started the recipe finder")
-
-  go func() {
     time.Sleep(2000 * time.Millisecond)
-    f.running = false
-    f.messages <- "Done"
-  }()
 
-  return
-}
+    log.Println(name + " is done")
+  })}
 
-func (f RecipeFinder) Running() bool {
-  return f.running
+  return finder
 }
