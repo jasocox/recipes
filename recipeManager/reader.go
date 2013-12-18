@@ -38,10 +38,10 @@ func (r *RecipeReader) StartReader() (err error) {
   log.Println("Starting the recipe reader")
 
   go func() {
-    millis := rand.Intn(300)
+    seconds := rand.Intn(4)
 
-    log.Printf("Reader doing %d milliseconds worth of work", millis)
-    time.Sleep(time.Duration(int(time.Millisecond) * millis))
+    log.Printf("Reader doing %d seconds worth of work", seconds)
+    time.Sleep(time.Duration(int(time.Second) * seconds))
 
     r.running = false
     r.messages <- "Done"
