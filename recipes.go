@@ -4,23 +4,24 @@ import (
   "log"
   "recipes/recipeFinder"
   "recipes/recipeManager"
+  "goworker"
 )
 
 func main() {
-  log.Println("Starting Recipes App")
+  name := "Recipes App"
+  log.Println("Starting " + name)
 
-  finder := recipeFinder.New()
-  log.Println("Starting the recipe finder")
-  finder.MustStart()
-
-  manager := recipeManager.New(10)
-  log.Println("Starting the recipe manager")
-  manager.MustStart()
-
-  <-finder.Messages()
-  log.Println("Finder is done")
-  <-manager.Messages()
-  log.Println("Manager is done")
+  app := goworker.NewManagerFromTasks(name, []func()goworker.Worker{createRecipeFinder, createRecipeManager})
+  app.MustStart()
+  <-app.Messages()
 
   log.Println("Stopping Recipes App")
+}
+
+func createRecipeFinder() goworker.Worker {
+  return recipeFinder.New()
+}
+
+func createRecipeManager() goworker.Worker {
+  return recipeManager.New(10)
 }
