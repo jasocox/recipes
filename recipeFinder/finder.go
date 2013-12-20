@@ -12,11 +12,12 @@ type RecipeFinder struct {
 
 func New() RecipeFinder {
   name := "Recipe Finder"
+  log.Println("Creating " + name)
 
   finder := RecipeFinder{goworker.NewWorker(name, func() {
     log.Println(name + " is starting")
 
-    time.Sleep(2000 * time.Millisecond)
+    time.Sleep(200 * time.Millisecond)
 
     log.Println(name + " is done")
   })}

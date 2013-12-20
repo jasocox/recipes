@@ -10,25 +10,17 @@ func main() {
   log.Println("Starting Recipes App")
 
   finder := recipeFinder.New()
+  log.Println("Starting the recipe finder")
   finder.MustStart()
 
-  manager, managerMessages := recipeManager.New(10)
+  manager := recipeManager.New(10)
+  log.Println("Starting the recipe manager")
   manager.MustStart()
 
-  for finder.Running() || manager.Running() {
-    select {
-    case message := <-managerMessages:
-      switch message {
-      case "Done":
-        log.Println("Manager is done")
-      }
-    case message := <-finder.Messages():
-      switch message {
-          case "Done":
-            log.Println("Finder is done")
-      }
-    }
-  }
+  <-finder.Messages()
+  log.Println("Finder is done")
+  <-manager.Messages()
+  log.Println("Manager is done")
 
   log.Println("Stopping Recipes App")
 }

@@ -3,53 +3,29 @@ package recipeManager
 import (
   "log"
   "time"
-  "errors"
   "math/rand"
+
+  "goworker"
 )
 
 type RecipeReader struct {
-  messages chan string
-  running bool
+  goworker.Worker
 }
 
-func NewReader() (reader RecipeReader, messages chan string) {
-  log.Println("Creating Recipe Reader")
+func NewReader() RecipeReader {
+  name := "Recipe Reader"
+  log.Println("Creating " + name)
 
-  messages = make(chan string)
-  reader.messages = messages
+  reader := RecipeReader{goworker.NewWorker(name, func() {
+    log.Println(name + " is starting")
 
-  return
-}
+    millis := rand.Intn(400) + 100
 
-func (r *RecipeReader) MustStartReader() {
-  err := r.StartReader()
-  if err != nil {
-    panic(err.Error())
-  }
-}
+    log.Printf("Reader doing %d milliseconds worth of work", millis)
+    time.Sleep(time.Duration(int(time.Millisecond) * millis))
 
-func (r *RecipeReader) StartReader() (err error) {
-  if r.running {
-    err = errors.New("Recipe Reader is already running")
-    return
-  }
+    log.Println(name + " is done")
+  })}
 
-  r.running = true
-  log.Println("Starting the recipe reader")
-
-  go func() {
-    seconds := rand.Intn(4)
-
-    log.Printf("Reader doing %d seconds worth of work", seconds)
-    time.Sleep(time.Duration(int(time.Second) * seconds))
-
-    r.running = false
-    r.messages <- "Done"
-  }()
-
-  return
-}
-
-func (r RecipeReader) RunningReader() bool {
-  return r.running
+  return reader
 }
