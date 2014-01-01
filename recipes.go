@@ -3,25 +3,21 @@ package main
 import (
   "log"
   "recipes/recipeFinder"
-  "recipes/recipeManager"
+  "recipes/recipeReader"
   "goworker"
 )
 
 func main() {
-  name := "Recipes App"
-  log.Println("Starting " + name)
+  name := "Recipes Task Manager"
 
-  app := goworker.NewManagerFromTasks(name, []func()goworker.Worker{createRecipeFinder, createRecipeManager})
-  app.MustStart()
-  <-app.Messages()
+  app := goworker.NewManager(name, 10)
+
+  app.Exec(recipeFinder.New())
+  for i:=0; i<99; i++ {
+    app.Exec(recipeReader.New())
+  }
+
+  app.Finish()
 
   log.Println("Stopping Recipes App")
-}
-
-func createRecipeFinder() goworker.Worker {
-  return recipeFinder.New()
-}
-
-func createRecipeManager() goworker.Worker {
-  return recipeManager.New(10)
 }

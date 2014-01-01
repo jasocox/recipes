@@ -3,24 +3,18 @@ package recipeFinder
 import (
   "log"
   "time"
-  "goworker"
 )
 
-type RecipeFinder struct {
-  goworker.Worker
-}
+type RecipeFinder struct {}
 
 func New() RecipeFinder {
-  name := "Recipe Finder"
-  log.Println("Creating " + name)
+  return RecipeFinder{}
+}
 
-  finder := RecipeFinder{goworker.NewWorker(name, func() {
-    log.Println(name + " is starting")
+func (f RecipeFinder) Do() error {
+  log.Println("Finder working for 200 milliseconds")
 
-    time.Sleep(200 * time.Millisecond)
+  time.Sleep(2000 * time.Millisecond)
 
-    log.Println(name + " is done")
-  })}
-
-  return finder
+  return nil
 }
