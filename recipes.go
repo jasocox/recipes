@@ -2,9 +2,9 @@ package main
 
 import (
   "log"
-  "recipes/recipeFinder"
-  "recipes/recipeReader"
-  "goworker"
+  "github.com/jasocox/recipes/recipeFinder"
+  "github.com/jasocox/recipes/recipeReader"
+  "github.com/jasocox/goworker"
 )
 
 func main() {
